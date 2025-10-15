@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { FavoriteButton } from '@/components/features/crypto/FavoriteButton'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { ErrorState } from '@/components/ui/ErrorState'
+import { useFavorites } from '@/contexts/FavoritesContext'
 import { ListedAsset } from '@/types/crypto'
 
 interface AssetDetails extends ListedAsset {
@@ -34,6 +35,9 @@ export default function AssetDetailsPage() {
   const [asset, setAsset] = useState<AssetDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { favorites, toggleFavorite } = useFavorites()
+  
+  const isFavorite = favorites.some(fav => fav.assetId === assetId)
 
   useEffect(() => {
     const fetchAssetDetails = async () => {
@@ -125,8 +129,8 @@ export default function AssetDetailsPage() {
             </div>
             <FavoriteButton 
               assetId={asset.id}
-              isFavorite={false}
-              onToggle={async () => {}}
+              isFavorite={isFavorite}
+              onToggle={toggleFavorite}
             />
           </div>
         </div>

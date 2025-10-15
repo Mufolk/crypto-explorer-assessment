@@ -19,10 +19,14 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
-  const userId = getOrCreateAnonUserId();
+  // Only get userId on client side
+  const userId = isClient ? getOrCreateAnonUserId() : null;
 
   const fetchFavorites = useCallback(async () => {
+    if (!userId) return;
+    
     try {
       setError(null);
       console.log('FavoritesContext - Fetching favorites for userId:', userId);
@@ -38,6 +42,11 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   }, [userId]);
 
   const toggleFavorite = useCallback(async (assetId: string) => {
+    if (!userId) {
+      console.error('FavoritesContext - Cannot toggle favorite: userId not available');
+      return;
+    }
+    
     const isFavorite = favorites.some(fav => fav.assetId === assetId);
     
     try {
@@ -93,7 +102,14 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, [fetchFavorites]);
 
+  // Set client flag on mount
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient || !userId) return;
+    
     const loadFavorites = async () => {
       setIsLoading(true);
       await fetchFavorites();
@@ -101,7 +117,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     };
     
     loadFavorites();
-  }, [fetchFavorites]);
+  }, [isClient, userId, fetchFavorites]);
 
   return (
     <FavoritesContext.Provider value={{
