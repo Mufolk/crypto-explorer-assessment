@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { COINGECKO_BASE_URL } from "@/lib/constants";
+import { ListedAsset } from "@/types/crypto";
 
 type CoinGeckoMarket = {
   id: string;
@@ -10,9 +11,20 @@ type CoinGeckoMarket = {
   price_change_percentage_24h: number;
 };
 
-let cacheData: CoinGeckoMarket[] | null = null;
+let cacheData: ListedAsset[] | null = null;
 let cacheTimeMs = 0;
 const CACHE_TTL_MS = 60_000; // 60 seconds
+
+function transformCoinGeckoData(coinGeckoData: CoinGeckoMarket[]): ListedAsset[] {
+  return coinGeckoData.map(coin => ({
+    id: coin.id,
+    symbol: coin.symbol,
+    name: coin.name,
+    image: coin.image,
+    priceUsd: coin.current_price || 0,
+    changePercent24Hr: coin.price_change_percentage_24h || 0,
+  }));
+}
 
 export async function GET() {
   const now = Date.now();
@@ -34,10 +46,11 @@ export async function GET() {
         { status: 502 }
       );
     }
-    const data = (await res.json()) as CoinGeckoMarket[];
-    cacheData = data;
+    const coinGeckoData = (await res.json()) as CoinGeckoMarket[];
+    const transformedData = transformCoinGeckoData(coinGeckoData);
+    cacheData = transformedData;
     cacheTimeMs = now;
-    return NextResponse.json({ source: "network", data });
+    return NextResponse.json({ source: "network", data: transformedData });
   } catch (err) {
     return NextResponse.json(
       { error: (err as Error).message ?? "Unknown error" },

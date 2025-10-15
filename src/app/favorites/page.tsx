@@ -1,28 +1,17 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { ListedAsset, Favorite } from '@/types/crypto';
+import { ListedAsset } from '@/types/crypto';
 import { AssetList } from '@/components/features/crypto/AssetList';
+import { useFavorites } from '@/contexts/FavoritesContext';
 import { clientCache } from '@/lib/client-cache';
-import { getOrCreateAnonUserId } from '@/lib/user-id';
 
 export default function FavoritesPage() {
   const [favoriteAssets, setFavoriteAssets] = useState<ListedAsset[]>([]);
-  const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const userId = getOrCreateAnonUserId();
-
-  const fetchFavorites = useCallback(async () => {
-    try {
-      setError(null);
-      const data = await clientCache.get<Favorite[]>(`/api/favorites?userId=${userId}`, 30000);
-      setFavorites(data || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch favorites');
-    }
-  }, [userId]);
+  const { favorites, toggleFavorite, refreshFavorites } = useFavorites();
 
   const fetchFavoriteAssets = useCallback(async () => {
     try {
@@ -44,83 +33,21 @@ export default function FavoritesPage() {
     }
   }, [favorites]);
 
-  const toggleFavorite = async (assetId: string) => {
-    const isFavorite = favorites.some(fav => fav.assetId === assetId);
-    
-    try {
-      if (isFavorite) {
-        // Remove from favorites
-        const favorite = favorites.find(fav => fav.assetId === assetId);
-        if (favorite) {
-          const response = await fetch(`/api/favorites?id=${favorite.id}`, {
-            method: 'DELETE',
-          });
-          
-          if (!response.ok) {
-            throw new Error('Failed to remove favorite');
-          }
-          
-          setFavorites(prev => prev.filter(fav => fav.assetId !== assetId));
-          setFavoriteAssets(prev => prev.filter(asset => asset.id !== assetId));
-        }
-      } else {
-        // Add to favorites
-        const response = await fetch('/api/favorites', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            assetId,
-          }),
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to add favorite');
-        }
-        
-        const newFavorite = await response.json();
-        setFavorites(prev => [...prev, newFavorite]);
-        
-        // If we have the asset data, add it to the list
-        const allAssetsData = await clientCache.get<{ data: ListedAsset[] }>('/api/assets', 60000);
-        if (allAssetsData?.data) {
-          const asset = allAssetsData.data.find(a => a.id === assetId);
-          if (asset) {
-            setFavoriteAssets(prev => [...prev, asset]);
-          }
-        }
-      }
-    } catch (err) {
-      console.error('Failed to toggle favorite:', err);
-      throw err;
-    }
-  };
-
   const retry = async () => {
     setIsLoading(true);
-    await Promise.all([fetchFavorites(), fetchFavoriteAssets()]);
+    await Promise.all([refreshFavorites(), fetchFavoriteAssets()]);
     setIsLoading(false);
   };
 
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
-      await fetchFavorites();
+      await fetchFavoriteAssets();
       setIsLoading(false);
     };
     
     loadData();
-  }, [fetchFavorites]);
-
-  useEffect(() => {
-    if (favorites.length > 0) {
-      fetchFavoriteAssets();
-    } else {
-      setFavoriteAssets([]);
-    }
-  }, [favorites, fetchFavoriteAssets]);
+  }, [fetchFavoriteAssets]);
 
   return (
     <div className="container mx-auto px-4 py-8">

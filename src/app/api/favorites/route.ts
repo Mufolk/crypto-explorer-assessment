@@ -24,7 +24,16 @@ export async function GET(req: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return NextResponse.json(data || []);
+  
+  // Transform the data to match frontend expectations
+  const transformedData = (data || []).map(fav => ({
+    id: fav.id,
+    userId: fav.client_id,
+    assetId: fav.asset_id,
+    createdAt: fav.created_at
+  }));
+  
+  return NextResponse.json(transformedData);
 }
 
 export async function POST(req: NextRequest) {
@@ -43,7 +52,7 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return NextResponse.json({ id: data.id, userId: clientId, assetId, createdAt: data.created_at });
+  return NextResponse.json({ id: data.id, userId: data.client_id, assetId: data.asset_id, createdAt: data.created_at });
 }
 
 export async function DELETE(req: NextRequest) {

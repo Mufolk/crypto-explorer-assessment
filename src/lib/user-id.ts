@@ -12,6 +12,9 @@ export function getOrCreateAnonUserId(): string {
     // Generate a UUID-like ID
     userId = 'user-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now().toString(36);
     localStorage.setItem(USER_ID_KEY, userId);
+    console.log('Generated new userId:', userId);
+  } else {
+    console.log('Using existing userId:', userId);
   }
   
   return userId;

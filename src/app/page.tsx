@@ -1,19 +1,20 @@
 'use client';
 
 import { AssetList } from '@/components/features/crypto/AssetList';
-import { useAssets } from '@/hooks/useAssets';
+import { useAssetsOnly } from '@/hooks/useAssetsOnly';
+import { useFavorites } from '@/contexts/FavoritesContext';
 
 export default function Home() {
   const {
     assets,
-    favorites,
     isLoading,
     error,
     canLoadMore,
-    toggleFavorite,
     loadMore,
     retry,
-  } = useAssets();
+  } = useAssetsOnly();
+
+  const { favorites, toggleFavorite } = useFavorites();
 
   return (
     <div className="container mx-auto px-4 py-8">

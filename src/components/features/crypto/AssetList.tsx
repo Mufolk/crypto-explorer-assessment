@@ -35,22 +35,16 @@ export function AssetList({
   const [favoriteMap, setFavoriteMap] = useState<Set<string>>(new Set());
 
   useEffect(() => {
+    console.log('AssetList - favorites changed:', favorites);
+    console.log('AssetList - first favorite structure:', favorites[0]);
     const favoriteIds = new Set(favorites.map(fav => fav.assetId));
+    console.log('AssetList - favoriteIds:', Array.from(favoriteIds));
     setFavoriteMap(favoriteIds);
   }, [favorites]);
 
   const handleToggleFavorite = async (assetId: string) => {
     await onToggleFavorite(assetId);
-    // Optimistic update
-    setFavoriteMap(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(assetId)) {
-        newSet.delete(assetId);
-      } else {
-        newSet.add(assetId);
-      }
-      return newSet;
-    });
+    // The parent component will update the favorites state, which will trigger the useEffect
   };
 
   if (error) {

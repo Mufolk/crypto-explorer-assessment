@@ -11,16 +11,19 @@ class ClientCache {
     const cached = this.cache.get(url);
     
     if (cached && Date.now() - cached.timestamp < cached.ttl) {
+      console.log('Cache hit for:', url, 'data:', cached.data);
       return cached.data as T;
     }
 
     try {
+      console.log('Cache miss, fetching:', url);
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
       const data = await response.json();
+      console.log('Fetched data for:', url, 'data:', data);
       this.cache.set(url, {
         data,
         timestamp: Date.now(),

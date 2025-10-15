@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import { ListedAsset } from '@/types/crypto';
 import { formatCurrency, formatPercent } from '@/utils/format';
@@ -18,6 +19,7 @@ export function AssetCard({
   onToggleFavorite, 
   className = '' 
 }: AssetCardProps) {
+  const [imageError, setImageError] = useState(false);
   const isPositive = asset.changePercent24Hr >= 0;
   const changeColor = isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
   const changeBg = isPositive ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20';
@@ -29,7 +31,7 @@ export function AssetCard({
     `}>
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3 flex-1 min-w-0">
-          {asset.image ? (
+          {asset.image && !imageError ? (
             <div className="flex-shrink-0">
               <Image
                 src={asset.image}
@@ -37,6 +39,7 @@ export function AssetCard({
                 width={32}
                 height={32}
                 className="rounded-full"
+                onError={() => setImageError(true)}
               />
             </div>
           ) : (
