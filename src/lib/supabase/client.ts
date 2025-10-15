@@ -17,3 +17,24 @@ export function getSupabaseClient(): SupabaseClient {
   cachedClient = createClient(url, anonKey);
   return cachedClient;
 }
+
+let cachedServerClient: SupabaseClient | null = null;
+
+export function getSupabaseServerClient(): SupabaseClient {
+  if (cachedServerClient) return cachedServerClient;
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !serviceRoleKey) {
+    throw new Error(
+      "Supabase server client not configured. Set SUPABASE_SERVICE_ROLE_KEY and SUPABASE_URL or NEXT_PUBLIC_SUPABASE_URL."
+    );
+  }
+
+  cachedServerClient = createClient(url, serviceRoleKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: { headers: { "X-Client-Info": "crypto-explorer-api" } },
+  });
+  return cachedServerClient;
+}

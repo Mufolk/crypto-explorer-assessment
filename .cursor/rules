@@ -1,0 +1,46 @@
+# Cryptocurrency Explorer - Development Rules
+
+Cryptocurrency Explorer - Cursor IDE Execution Guide
+
+Detailed Step-by-Step Implementation Plan
+
+Overview
+
+Pre-Development Setup (10 minutes)
+
+1. Git Repository Setup
+main: Production-ready code only
+develop: Primary development branch
+feature/xxx: Individual features (optional for speed)
+Commit frequently with descriptive messages[ 132][^135] 129][
+
+2. Cursor IDE Configuration
+## Core Instructions
+- Only modify code directly relevant to the specific request
+- Never replace code with placeholders like "// ... rest of the code ..."
+- Always provide complete, functional code
+- Break problems into smaller steps and implement completely
+- Use TypeScript with proper typing (basic typing acceptable for speed)
+## Project Context
+This is a Next.js 14 cryptocurrency assets explorer with:
+- Frontend: Next.js 14 App Router, React, TypeScript, Tailwind CSS
+- Backend: Next.js API Routes, Supabase database
+- External API: CoinGecko public API for crypto data
+- Goal: Complete core features in 4 hours maximum
+## Code Standards
+- Use kebab-case for file names: user-profile.tsx
+- Use PascalCase for React components: UserProfile
+- Use camelCase for variables and props: userSettings
+- Mobile-first responsive design with Tailwind CSS
+- Client-side data fetching with proper error handling
+## Architecture Patterns
+- Component-based architecture with reusable UI components
+- API Routes for backend endpoints with proper error handling
+- In-memory caching for external API calls (60-second TTL)
+- TypeScript interfaces for all data structures
+- Proper separation of concerns: components, lib, utils, types
+## Commit Strategy
+- Make small, specific commits for each feature
+- Use conventional commit messages: "feat:", "fix:", "docs:"
+- Commit frequently to show development progress
+- Test functionality before committing
