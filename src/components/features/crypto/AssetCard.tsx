@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ListedAsset } from '@/types/crypto';
 import { formatCurrency, formatPercent } from '@/utils/format';
 import { FavoriteButton } from './FavoriteButton';
@@ -11,26 +12,39 @@ interface AssetCardProps {
   isFavorite: boolean;
   onToggleFavorite: (assetId: string) => Promise<void>;
   className?: string;
+  onClick?: (asset: ListedAsset) => void;
 }
 
 export function AssetCard({ 
   asset, 
   isFavorite, 
   onToggleFavorite, 
-  className = '' 
+  className = '',
+  onClick
 }: AssetCardProps) {
   const [imageError, setImageError] = useState(false);
   const isPositive = asset.changePercent24Hr >= 0;
   const changeColor = isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
   const changeBg = isPositive ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20';
 
+  const handleCardClick = () => {
+    if (onClick) {
+      onClick(asset);
+    }
+  };
+
   return (
     <div className={`
       bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition-shadow
+      ${onClick ? 'cursor-pointer' : ''}
       ${className}
     `}>
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
+        <Link 
+          href={`/assets/${asset.id}`}
+          className="flex items-center space-x-3 flex-1 min-w-0 hover:opacity-80 transition-opacity"
+          onClick={handleCardClick}
+        >
           {asset.image && !imageError ? (
             <div className="flex-shrink-0">
               <Image
@@ -58,7 +72,7 @@ export function AssetCard({
               {asset.symbol}
             </p>
           </div>
-        </div>
+        </Link>
         
         <div className="flex items-center space-x-3">
           <div className="text-right">
@@ -73,11 +87,13 @@ export function AssetCard({
             </div>
           </div>
           
-          <FavoriteButton
-            isFavorite={isFavorite}
-            onToggle={onToggleFavorite}
-            assetId={asset.id}
-          />
+          <div onClick={(e) => e.stopPropagation()}>
+            <FavoriteButton
+              isFavorite={isFavorite}
+              onToggle={onToggleFavorite}
+              assetId={asset.id}
+            />
+          </div>
         </div>
       </div>
     </div>

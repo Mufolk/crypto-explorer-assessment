@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -19,23 +20,26 @@ export function SiteHeader() {
             Crypto Explorer
           </h1>
           
-          <nav className="flex space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`
-                  px-3 py-2 rounded-md text-sm font-medium transition-colors
-                  ${item.current
-                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800'
-                  }
-                `}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
+          <div className="flex items-center space-x-4">
+            <nav className="flex space-x-8">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`
+                    px-3 py-2 rounded-md text-sm font-medium transition-colors
+                    ${item.current
+                      ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800'
+                    }
+                  `}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            <DarkModeToggle />
+          </div>
         </div>
       </div>
     </header>

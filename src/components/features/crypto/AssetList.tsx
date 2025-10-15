@@ -52,7 +52,7 @@ export function AssetList({
       <ErrorState
         title="Failed to load assets"
         message={error}
-        onRetry={onRetry}
+        {...(onRetry && { onRetry })}
         className={className}
       />
     );
