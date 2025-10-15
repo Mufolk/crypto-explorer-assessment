@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { COINGECKO_BASE_URL } from "@/lib/constants";
 
 type CoinGeckoMarket = {
@@ -14,7 +14,7 @@ let cacheData: CoinGeckoMarket[] | null = null;
 let cacheTimeMs = 0;
 const CACHE_TTL_MS = 60_000; // 60 seconds
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
   const now = Date.now();
   if (cacheData && now - cacheTimeMs < CACHE_TTL_MS) {
     return NextResponse.json({ source: "cache", data: cacheData });

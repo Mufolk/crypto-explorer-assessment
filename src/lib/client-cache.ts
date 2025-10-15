@@ -5,13 +5,13 @@ interface CacheEntry<T> {
 }
 
 class ClientCache {
-  private cache = new Map<string, CacheEntry<any>>();
+  private cache = new Map<string, CacheEntry<unknown>>();
 
   async get<T>(url: string, ttlMs: number = 60000): Promise<T | null> {
     const cached = this.cache.get(url);
     
     if (cached && Date.now() - cached.timestamp < cached.ttl) {
-      return cached.data;
+      return cached.data as T;
     }
 
     try {

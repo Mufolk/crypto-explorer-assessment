@@ -1,13 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseClient } from "@/lib/supabase/client";
 
-type FavoriteRow = {
-  id: string;
-  client_id: string;
-  asset_id: string;
-  created_at: string;
-};
-
 function getClientId(req: NextRequest): string | null {
   const fromHeader = req.headers.get("x-user-id");
   if (fromHeader && fromHeader.trim().length > 0) return fromHeader.trim();

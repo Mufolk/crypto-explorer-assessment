@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ListedAsset, Favorite } from '@/types/crypto';
 import { AssetList } from '@/components/features/crypto/AssetList';
 import { clientCache } from '@/lib/client-cache';
@@ -14,7 +14,7 @@ export default function FavoritesPage() {
 
   const userId = getOrCreateAnonUserId();
 
-  const fetchFavorites = async () => {
+  const fetchFavorites = useCallback(async () => {
     try {
       setError(null);
       const data = await clientCache.get<Favorite[]>(`/api/favorites?userId=${userId}`, 30000);
@@ -22,9 +22,9 @@ export default function FavoritesPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch favorites');
     }
-  };
+  }, [userId]);
 
-  const fetchFavoriteAssets = async () => {
+  const fetchFavoriteAssets = useCallback(async () => {
     try {
       // Get all assets to map favorites to full asset data
       const assetsData = await clientCache.get<{ data: ListedAsset[] }>('/api/assets', 60000);
@@ -42,7 +42,7 @@ export default function FavoritesPage() {
       console.error('Failed to fetch favorite assets:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch favorite assets');
     }
-  };
+  }, [favorites]);
 
   const toggleFavorite = async (assetId: string) => {
     const isFavorite = favorites.some(fav => fav.assetId === assetId);
@@ -112,7 +112,7 @@ export default function FavoritesPage() {
     };
     
     loadData();
-  }, []);
+  }, [fetchFavorites]);
 
   useEffect(() => {
     if (favorites.length > 0) {
@@ -120,7 +120,7 @@ export default function FavoritesPage() {
     } else {
       setFavoriteAssets([]);
     }
-  }, [favorites]);
+  }, [favorites, fetchFavoriteAssets]);
 
   return (
     <div className="container mx-auto px-4 py-8">
