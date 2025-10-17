@@ -233,9 +233,12 @@ CoinGecko API has rate limits. The application implements caching to minimize AP
 This project was developed with significant assistance from AI tools to accelerate development while maintaining high code quality:
 
 ### AI Tools Used
-- **Cursor IDE**: Primary development environment with AI-powered code completion and suggestions
-- **Claude Sonnet**: Code review, architecture decisions, and complex problem solving
-- **GitHub Copilot**: Real-time code suggestions and boilerplate generation
+- **Perplexity Search**: Initial research and draft planning docs
+- **Perplexity Deep thinking**: Deeper search and well documented planning for AI execution
+- **Perplexity Project generation**: Documentation and architetural suggestions in detail with boileplate examples
+- **Cursor IDE**: Primary development environment with AI-powered code completion and suggestions, using Perplexity docs
+- **Perplexity Search**: Code review, architecture decisions, and complex problem solving, for specific snippets
+- **GitHub Copilot**: Code review and security checks
 
 ### Specific AI Contributions
 1. **Component Architecture**: AI helped design the component structure and prop interfaces
@@ -248,12 +251,12 @@ This project was developed with significant assistance from AI tools to accelera
 
 ### Manual Development Choices
 - **UI/UX Design**: Manual design decisions for user experience and visual hierarchy
-- **Business Logic**: Core application logic and state management implemented manually
+- **Business Logic**: Core application logic and state management implemented semi-manually, human checking here is very rigorous
 - **Code Review**: All AI-generated code was manually reviewed and refined
 - **Architecture Decisions**: High-level architectural choices made through human judgment
 
 ### Productivity Impact
-- **Development Speed**: ~70% faster development with AI assistance
+- **Development Speed**: ~10x faster development with AI assistance
 - **Code Quality**: AI suggestions improved code consistency and best practices
 - **Testing Coverage**: AI helped achieve 70%+ test coverage quickly
 - **Documentation**: AI accelerated comprehensive documentation creation
@@ -263,7 +266,7 @@ This project was developed with significant assistance from AI tools to accelera
 2. **Implementation**: AI provided code suggestions and boilerplate
 3. **Review**: Manual review of all AI-generated code
 4. **Testing**: AI-assisted test generation with manual validation
-5. **Deployment**: AI-generated infrastructure code with manual configuration
+5. **Deployment**: AI-generated infrastructure code with manual configuration, not fully implemented
 
 ## Future Improvements
 
@@ -271,7 +274,7 @@ This project was developed with significant assistance from AI tools to accelera
 - [x] Asset details page
 - [x] Comprehensive testing suite
 - [x] Docker containerization
-- [x] CI/CD pipeline
+- [ ] CI/CD pipeline
 - [ ] User authentication system
 - [ ] Price alerts and notifications
 - [ ] Portfolio tracking
@@ -281,7 +284,7 @@ This project was developed with significant assistance from AI tools to accelera
 - [ ] Advanced charting integration
 - [ ] Historical price charts
 - [ ] Search functionality
-- [ ] Infinite scroll pagination
+- [x] Infinite scroll pagination
 
 ## Contributing
 
